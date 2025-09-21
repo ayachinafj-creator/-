@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>点击方块游戏</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f0f0f0;
+    }
+    #gameArea {
+      width: 400px;
+      height: 400px;
+      margin: 20px auto;
+      border: 2px solid #333;
+      position: relative;
+      background: #fff;
+    }
+    .box {
+      width: 40px;
+      height: 40px;
+      background: red;
+      position: absolute;
+      cursor: pointer;
+    }
+    #score, #time {
+      font-size: 20px;
+      margin: 10px;
+    }
+    #startBtn {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>点击方块游戏 🎮</h1>
+  <div id="score">得分: 0</div>
+  <div id="time">时间: 30</div>
+  <button id="startBtn">开始游戏</button>
+  <div id="gameArea"></div>
+
+  <script>
+    let score = 0;
+    let time = 30;
+    let timer, countdown;
+
+    const gameArea = document.getElementById("gameArea");
+    const scoreEl = document.getElementById("score");
+    const timeEl = document.getElementById("time");
+    const startBtn = document.getElementById("startBtn");
+
+    function startGame() {
+      score = 0;
+      time = 30;
+      scoreEl.textContent = "得分: " + score;
+      timeEl.textContent = "时间: " + time;
+      gameArea.innerHTML = "";
+
+      clearInterval(timer);
+      clearInterval(countdown);
+
+      spawnBox();
+      countdown = setInterval(() => {
+        time--;
+        timeEl.textContent = "时间: " + time;
+        if (time <= 0) {
+          clearInterval(countdown);
+          clearInterval(timer);
+          alert("时间到！最终得分: " + score);
+        }
+      }, 1000);
+    }
+
+    function spawnBox() {
+      if (time <= 0) return;
+
+      const box = document.createElement("div");
+      box.className = "box";
+      box.style.top = Math.random() * 360 + "px";
+      box.style.left = Math.random() * 360 + "px";
+      gameArea.appendChild(box);
+
+      box.onclick = () => {
+        score++;
+        scoreEl.textContent = "得分: " + score;
+        gameArea.removeChild(box);
+      };
+
+      setTimeout(() => {
+        if (gameArea.contains(box)) {
+          gameArea.removeChild(box);
+        }
+        spawnBox();
+      }, 800);
+    }
+
+    startBtn.addEventListener("click", startGame);
+  </script>
+</body>
+</html>
